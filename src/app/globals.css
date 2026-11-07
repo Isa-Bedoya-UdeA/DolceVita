@@ -1,0 +1,276 @@
+@import "tailwindcss";
+
+/* ==========================================================================
+   Dolce Vita Design System Tokens (DESIGNSYSTEM.md)
+   ========================================================================== */
+
+:root {
+    /* ------------------------------------------------------------------------
+     4.1 Brand Colors (Theme Invariant)
+     ------------------------------------------------------------------------ */
+    --brand-primary: #f54900;
+    --brand-primary-hover: #d93f00;
+    --brand-secondary: #ff6900;
+    --brand-accent: #ffd236;
+
+    /* ------------------------------------------------------------------------
+     4.1 Light Theme Base Tokens
+     ------------------------------------------------------------------------ */
+    --background: #faf8f6;
+    --surface: #ffffff;
+    --surface-raised: #ffffff;
+    --surface-muted: #f3efeb;
+    --border: #e7ded7;
+    --text-primary: #29231f;
+    --text-secondary: #766b63;
+    --text-inverse: #ffffff;
+
+    /* ------------------------------------------------------------------------
+     4.1 Light Theme Semantic Status Colors
+     ------------------------------------------------------------------------ */
+    --success: #e8f5ec;
+    --success-foreground: #246b43;
+    --success-border: #b9dec6;
+
+    --warning: #fff4d6;
+    --warning-foreground: #805b00;
+    --warning-border: #f0d68b;
+
+    --error: #fce9e7;
+    --error-foreground: #a63228;
+    --error-border: #f1b9b3;
+
+    --info: #e8f1fc;
+    --info-foreground: #285d91;
+    --info-border: #bbd3ef;
+
+    /* ------------------------------------------------------------------------
+     5. Typography Tokens
+     ------------------------------------------------------------------------ */
+    --font-heading: "Space Grotesk", system-ui, -apple-system, sans-serif;
+    --font-body: "Inter", system-ui, -apple-system, sans-serif;
+    --font-code: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
+
+    --font-size-display: 2.5rem;
+    /* 40px */
+    --font-size-h1: 2rem;
+    /* 32px */
+    --font-size-h2: 1.5rem;
+    /* 24px */
+    --font-size-h3: 1.25rem;
+    /* 20px */
+    --font-size-h4: 1.125rem;
+    /* 18px */
+    --font-size-body-large: 1rem;
+    /* 16px */
+    --font-size-body: 0.875rem;
+    /* 14px */
+    --font-size-body-small: 0.75rem;
+    /* 12px */
+    --font-size-label: 0.875rem;
+    /* 14px */
+    --font-size-caption: 0.6875rem;
+    /* 11px */
+    --font-size-code: 0.8125rem;
+    /* 13px */
+
+    --line-height-display: 1.15;
+    --line-height-h1: 1.2;
+    --line-height-h2: 1.3;
+    --line-height-h3: 1.35;
+    --line-height-h4: 1.4;
+    --line-height-body-large: 1.6;
+    --line-height-body: 1.5;
+    --line-height-body-small: 1.5;
+    --line-height-label: 1.4;
+    --line-height-caption: 1.4;
+    --line-height-code: 1.5;
+
+    --font-weight-regular: 400;
+    --font-weight-medium: 500;
+    --font-weight-semibold: 600;
+    --font-weight-bold: 700;
+
+    /* ------------------------------------------------------------------------
+     6. Spacing Tokens (4px base)
+     ------------------------------------------------------------------------ */
+    --space-1: 0.25rem;
+    /* 4px */
+    --space-2: 0.5rem;
+    /* 8px */
+    --space-3: 0.75rem;
+    /* 12px */
+    --space-4: 1rem;
+    /* 16px */
+    --space-5: 1.25rem;
+    /* 20px */
+    --space-6: 1.5rem;
+    /* 24px */
+    --space-8: 2rem;
+    /* 32px */
+    --space-10: 2.5rem;
+    /* 40px */
+    --space-12: 3rem;
+    /* 48px */
+    --space-16: 4rem;
+    /* 64px */
+    --space-20: 5rem;
+    /* 80px */
+
+    /* ------------------------------------------------------------------------
+     7. Shape Tokens (Border Radii)
+     ------------------------------------------------------------------------ */
+    --radius-sm: 0.25rem;
+    /* 4px */
+    --radius-md: 0.5rem;
+    /* 8px */
+    --radius-lg: 0.75rem;
+    /* 12px */
+    --radius-xl: 1rem;
+    /* 16px */
+    --radius-2xl: 1.25rem;
+    /* 20px */
+    --radius-full: 9999px;
+
+    /* ------------------------------------------------------------------------
+     7.2 Elevation & Shadows (Light Theme)
+     ------------------------------------------------------------------------ */
+    --elevation-0: none;
+    --elevation-1: 0 1px 3px 0 rgba(41, 35, 31, 0.06), 0 1px 2px -1px rgba(41, 35, 31, 0.04);
+    --elevation-2: 0 4px 6px -1px rgba(41, 35, 31, 0.08), 0 2px 4px -2px rgba(41, 35, 31, 0.05);
+    --elevation-3: 0 10px 15px -3px rgba(41, 35, 31, 0.1), 0 4px 6px -4px rgba(41, 35, 31, 0.06);
+
+    /* ------------------------------------------------------------------------
+     8.2 Icon Size Tokens
+     ------------------------------------------------------------------------ */
+    --icon-xs: 0.75rem;
+    /* 12px */
+    --icon-sm: 1rem;
+    /* 16px */
+    --icon-md: 1.25rem;
+    /* 20px */
+    --icon-lg: 1.5rem;
+    /* 24px */
+    --icon-xl: 2rem;
+    /* 32px */
+
+    /* ------------------------------------------------------------------------
+     14.2 Motion & Animation Tokens
+     ------------------------------------------------------------------------ */
+    --duration-fast: 100ms;
+    --duration-normal: 180ms;
+    --duration-slow: 250ms;
+    --duration-emphasis: 350ms;
+
+    --ease-standard: cubic-bezier(0.4, 0, 0.2, 1);
+    --ease-enter: cubic-bezier(0, 0, 0.2, 1);
+    --ease-exit: cubic-bezier(0.4, 0, 1, 1);
+}
+
+/* ==========================================================================
+   4.1 Dark Theme Tokens (Applied via .dark class or system preference)
+   ========================================================================== */
+
+.dark {
+    /* Surfaces & Background */
+    --background: #0c0a09;
+    --surface: #1c1917;
+    --surface-raised: #292421;
+    --surface-muted: #24201d;
+    --border: #3a332e;
+
+    /* Typography Colors */
+    --text-primary: #f5f0eb;
+    --text-secondary: #b7aaa0;
+    --text-inverse: #29231f;
+
+    /* Semantic Status Colors */
+    --success: #173323;
+    --success-foreground: #a9ddb9;
+    --success-border: #28563a;
+
+    --warning: #3a2d12;
+    --warning-foreground: #f6d78a;
+    --warning-border: #6b5120;
+
+    --error: #3b1f1d;
+    --error-foreground: #f2aaa3;
+    --error-border: #67312d;
+
+    --info: #1c2c3d;
+    --info-foreground: #a9c9ec;
+    --info-border: #304a66;
+
+    /* Elevation Shadows (Dark) */
+    --elevation-0: none;
+    --elevation-1: 0 1px 3px 0 rgba(0, 0, 0, 0.35), 0 1px 2px -1px rgba(0, 0, 0, 0.25);
+    --elevation-2: 0 4px 6px -1px rgba(0, 0, 0, 0.45), 0 2px 4px -2px rgba(0, 0, 0, 0.35);
+    --elevation-3: 0 10px 15px -3px rgba(0, 0, 0, 0.6), 0 4px 6px -4px rgba(0, 0, 0, 0.45);
+}
+
+/* ==========================================================================
+   Tailwind CSS v4 @theme inline integration
+   ========================================================================== */
+
+@theme inline {
+    --color-brand-primary: var(--brand-primary);
+    --color-brand-primary-hover: var(--brand-primary-hover);
+    --color-brand-secondary: var(--brand-secondary);
+    --color-brand-accent: var(--brand-accent);
+
+    --color-background: var(--background);
+    --color-surface: var(--surface);
+    --color-surface-raised: var(--surface-raised);
+    --color-surface-muted: var(--surface-muted);
+    --color-border: var(--border);
+
+    --color-text-primary: var(--text-primary);
+    --color-text-secondary: var(--text-secondary);
+    --color-text-inverse: var(--text-inverse);
+
+    --color-success: var(--success);
+    --color-success-foreground: var(--success-foreground);
+    --color-success-border: var(--success-border);
+
+    --color-warning: var(--warning);
+    --color-warning-foreground: var(--warning-foreground);
+    --color-warning-border: var(--warning-border);
+
+    --color-error: var(--error);
+    --color-error-foreground: var(--error-foreground);
+    --color-error-border: var(--error-border);
+
+    --color-info: var(--info);
+    --color-info-foreground: var(--info-foreground);
+    --color-info-border: var(--info-border);
+
+    --font-heading: var(--font-heading);
+    --font-body: var(--font-body);
+    --font-code: var(--font-code);
+
+    --radius-sm: var(--radius-sm);
+    --radius-md: var(--radius-md);
+    --radius-lg: var(--radius-lg);
+    --radius-xl: var(--radius-xl);
+    --radius-2xl: var(--radius-2xl);
+    --radius-full: var(--radius-full);
+
+    --shadow-elevation-0: var(--elevation-0);
+    --shadow-elevation-1: var(--elevation-1);
+    --shadow-elevation-2: var(--elevation-2);
+    --shadow-elevation-3: var(--elevation-3);
+
+    --ease-standard: var(--ease-standard);
+    --ease-enter: var(--ease-enter);
+    --ease-exit: var(--ease-exit);
+}
+
+/* ==========================================================================
+   Base styles
+   ========================================================================== */
+
+body {
+    background: var(--background);
+    color: var(--text-primary);
+    font-family: var(--font-body);
+}

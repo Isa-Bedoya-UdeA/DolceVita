@@ -1,9 +1,9 @@
-import { NextResponse } from "next/server";
+import { conversationController } from "@/server/controllers/conversation.controller";
 
-export async function GET() {
-    return NextResponse.json({ message: "List conversations" });
+export async function GET(req: Request) {
+    return conversationController.list(req);
 }
 
-export async function POST() {
-    return NextResponse.json({ message: "Create conversation" });
+export async function POST(req: Request) {
+    return conversationController.create(req);
 }

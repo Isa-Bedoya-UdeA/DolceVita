@@ -121,7 +121,7 @@ export function Footer() {
                         </h4>
                         <ul className="mt-4 space-y-2.5 text-sm">
                             <li className="text-text-secondary">Universidad de Antioquia</li>
-                            <li className="text-text-secondary">Ingeniería Web (S8)</li>
+                            <li className="text-text-secondary">Ingeniería Web</li>
                             <li className="text-text-secondary">Taller 2: AI Expert Chat</li>
                             <li className="pt-2">
                                 <Link

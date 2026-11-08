@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { Menu, X, ArrowRight, UserCheck } from "lucide-react";
+import { Menu, X, ArrowRight, UserCheck, MessageSquare } from "lucide-react";
 import { ThemeToggle } from "@/features/theme/components/ThemeToggle";
 
 interface NavItem {
@@ -76,6 +76,14 @@ export function Header() {
                     <div className="bg-border h-5 w-px" aria-hidden="true" />
 
                     <Link
+                        href="/chat"
+                        className="text-text-primary hover:text-brand-primary hover:bg-surface-muted/60 focus:ring-brand-primary inline-flex items-center gap-1.5 rounded-lg px-3.5 py-2 text-sm font-medium transition-colors focus:ring-2 focus:outline-none"
+                    >
+                        <MessageSquare className="text-brand-primary h-4 w-4" />
+                        <span>Ir al Chat</span>
+                    </Link>
+
+                    <Link
                         href="/login"
                         className="text-text-primary hover:text-brand-primary hover:bg-surface-muted/60 focus:ring-brand-primary inline-flex items-center gap-1.5 rounded-lg px-3.5 py-2 text-sm font-medium transition-colors focus:ring-2 focus:outline-none"
                     >
@@ -126,6 +134,15 @@ export function Header() {
 
                     <div className="border-border mt-4 border-t pt-4">
                         <div className="flex flex-col gap-2">
+                            <Link
+                                href="/chat"
+                                onClick={closeMobileMenu}
+                                className="bg-brand-primary/10 text-brand-primary hover:bg-brand-primary/20 inline-flex w-full items-center justify-center gap-2 rounded-lg py-2.5 text-sm font-semibold transition-colors"
+                            >
+                                <MessageSquare className="h-4 w-4" />
+                                <span>Ir al Chat (George)</span>
+                            </Link>
+
                             <Link
                                 href="/login"
                                 onClick={closeMobileMenu}

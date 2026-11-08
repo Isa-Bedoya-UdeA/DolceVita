@@ -1,20 +1,20 @@
-import { NextResponse } from "next/server";
+import { conversationController } from "@/server/controllers/conversation.controller";
 
 interface RouteParams {
     params: Promise<{ id: string }>;
 }
 
-export async function GET(request: Request, { params }: RouteParams) {
+export async function GET(req: Request, { params }: RouteParams) {
     const { id } = await params;
-    return NextResponse.json({ message: `Get conversation ${id}` });
+    return conversationController.getById(req, id);
 }
 
-export async function PATCH(request: Request, { params }: RouteParams) {
+export async function PATCH(req: Request, { params }: RouteParams) {
     const { id } = await params;
-    return NextResponse.json({ message: `Update conversation ${id}` });
+    return conversationController.rename(req, id);
 }
 
-export async function DELETE(request: Request, { params }: RouteParams) {
+export async function DELETE(req: Request, { params }: RouteParams) {
     const { id } = await params;
-    return NextResponse.json({ message: `Delete conversation ${id}` });
+    return conversationController.delete(req, id);
 }

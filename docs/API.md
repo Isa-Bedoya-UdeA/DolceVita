@@ -1813,6 +1813,7 @@ The approved testing stack includes Vitest, Testing Library, MSW, and Playwright
 | Version | Date | Change |
 | --- | --- | --- |
 | `1.0.0` | `2026-11-06` | Initial authoritative API contract for Dolce Vita. |
+| `1.1.0` | `2026-11-07` | Implemented conversation endpoints (`API-002`, `API-003`, `API-004`, `API-005`, `API-006`, `API-007`) with Clean Architecture and Swagger OpenAPI JSDoc specifications. |
 
 Changes that affect public API behavior must be reflected in this document and the corresponding requirements, architecture, security, and implementation documentation.
 

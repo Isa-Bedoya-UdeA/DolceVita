@@ -9,6 +9,7 @@ import { MessageMapper } from "../mappers/message.mapper";
 import {
     CreateConversationDto,
     ConversationResponseDto,
+    createConversationSchema,
 } from "../dto/conversations/create-conversation.dto";
 import {
     UpdateConversationDto,
@@ -46,7 +47,17 @@ export class ConversationService {
         userId: string,
         dto?: CreateConversationDto,
     ): Promise<ConversationResponseDto> {
-        const title = dto?.title?.trim() || "New conversation";
+        let validatedDto: CreateConversationDto = {};
+        if (dto) {
+            const parseResult = createConversationSchema.safeParse(dto);
+            if (!parseResult.success) {
+                const message = parseResult.error.issues[0]?.message || "Validation failed";
+                throw new ValidationException(message);
+            }
+            validatedDto = parseResult.data;
+        }
+
+        const title = validatedDto.title?.trim() || "New conversation";
 
         // Fetch active assistant config (George) to link conversation
         const activeAssistant = await prisma.assistantConfig.findFirst({

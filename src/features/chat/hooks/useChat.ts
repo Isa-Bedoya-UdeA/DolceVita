@@ -10,43 +10,51 @@ interface UseChatProps {
     conversationId?: string;
 }
 
+async function requestMessages(id: string): Promise<ChatMessageData[]> {
+    const res = await fetch(`/api/conversations/${id}/messages`, {
+        method: "GET",
+        headers: { "Content-Type": "application/json" },
+    });
+
+    if (!res.ok) {
+        const errData = await res.json().catch(() => ({}));
+        throw new Error(errData?.error?.message || "Error al cargar mensajes");
+    }
+
+    const json = await res.json();
+    return Array.isArray(json.data) ? json.data : [];
+}
+
 export function useChat({ conversationId }: UseChatProps) {
     const router = useRouter();
     const [messages, setMessages] = useState<ChatMessageData[]>([]);
-    const [isLoading, setIsLoading] = useState<boolean>(false);
+    const [isLoading, setIsLoading] = useState<boolean>(Boolean(conversationId));
     const [isGenerating, setIsGenerating] = useState<boolean>(false);
     const [error, setError] = useState<string | null>(null);
+    const [previousConversationId, setPreviousConversationId] = useState(conversationId);
 
-    const fetchMessages = useCallback(async (id: string) => {
-        try {
-            setIsLoading(true);
-            setError(null);
-            const res = await fetch(`/api/conversations/${id}/messages`, {
-                method: "GET",
-                headers: { "Content-Type": "application/json" },
-            });
+    if (previousConversationId !== conversationId) {
+        setPreviousConversationId(conversationId);
+        setError(null);
+        setIsLoading(Boolean(conversationId));
+        if (!conversationId) setMessages([]);
+    }
 
-            if (!res.ok) {
-                const errData = await res.json().catch(() => ({}));
-                throw new Error(errData?.error?.message || "Error al cargar mensajes");
-            }
-
-            const json = await res.json();
-            const list: ChatMessageData[] = Array.isArray(json.data) ? json.data : [];
-            setMessages(list);
-        } catch (err: unknown) {
-            const message = err instanceof Error ? err.message : "Error inesperado";
-            setError(message);
-        } finally {
-            setIsLoading(false);
-        }
+    const fetchMessages = useCallback((id: string) => {
+        return requestMessages(id)
+            .then((list) => {
+                setMessages(list);
+                setError(null);
+            })
+            .catch((err: unknown) => {
+                setError(err instanceof Error ? err.message : "Error inesperado");
+            })
+            .finally(() => setIsLoading(false));
     }, []);
 
     useEffect(() => {
         if (conversationId) {
             fetchMessages(conversationId);
-        } else {
-            setMessages([]);
         }
     }, [conversationId, fetchMessages]);
 

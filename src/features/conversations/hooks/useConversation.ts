@@ -12,33 +12,36 @@ export function notifyConversationsChanged() {
     }
 }
 
+async function requestConversations(): Promise<ConversationItemData[]> {
+    const res = await fetch("/api/conversations", {
+        method: "GET",
+        headers: { "Content-Type": "application/json" },
+    });
+
+    if (!res.ok) {
+        const errData = await res.json().catch(() => ({}));
+        throw new Error(errData?.error?.message || "Error al cargar conversaciones");
+    }
+
+    const json = await res.json();
+    return Array.isArray(json.data) ? json.data : [];
+}
+
 export function useConversation() {
     const [conversations, setConversations] = useState<ConversationItemData[]>([]);
     const [isLoading, setIsLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
 
-    const fetchConversations = useCallback(async () => {
-        try {
-            setError(null);
-            const res = await fetch("/api/conversations", {
-                method: "GET",
-                headers: { "Content-Type": "application/json" },
-            });
-
-            if (!res.ok) {
-                const errData = await res.json().catch(() => ({}));
-                throw new Error(errData?.error?.message || "Error al cargar conversaciones");
-            }
-
-            const json = await res.json();
-            const data: ConversationItemData[] = Array.isArray(json.data) ? json.data : [];
-            setConversations(data);
-        } catch (err: unknown) {
-            const message = err instanceof Error ? err.message : "Error inesperado";
-            setError(message);
-        } finally {
-            setIsLoading(false);
-        }
+    const fetchConversations = useCallback(() => {
+        return requestConversations()
+            .then((data) => {
+                setConversations(data);
+                setError(null);
+            })
+            .catch((err: unknown) => {
+                setError(err instanceof Error ? err.message : "Error inesperado");
+            })
+            .finally(() => setIsLoading(false));
     }, []);
 
     const createConversation = useCallback(async (title?: string): Promise<ConversationItemData | null> => {

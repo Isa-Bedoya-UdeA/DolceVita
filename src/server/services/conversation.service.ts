@@ -31,7 +31,7 @@ export class ConversationService {
     ) {}
 
     async listConversations(userId: string): Promise<ConversationResponseDto[]> {
-        let conversations = await this.conversationRepo.findByUserId(userId);
+        const conversations = await this.conversationRepo.findByUserId(userId);
 
         if (conversations.length === 0) {
             const all = await prisma.conversation.findMany({

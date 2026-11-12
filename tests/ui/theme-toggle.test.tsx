@@ -24,10 +24,11 @@ describe("ThemeToggle Component (UI)", () => {
     it("should call toggleTheme when clicked", async () => {
         const { useTheme } = await import("@/features/theme/hooks/useTheme");
         const mockToggle = vi.fn();
-        (useTheme as any).mockReturnValue({
+        vi.mocked(useTheme).mockReturnValue({
             theme: "light",
             resolvedTheme: "light",
             toggleTheme: mockToggle,
+            setTheme: vi.fn(),
             mounted: true,
         });
 

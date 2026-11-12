@@ -5,7 +5,7 @@ import { Sidebar } from "@/components/layout/Sidebar";
 
 // Mock next/image & navigation
 vi.mock("next/image", () => ({
-    default: (props: any) => <img {...props} />,
+    default: (props: React.ImgHTMLAttributes<HTMLImageElement>) => <img {...props} />,
 }));
 
 vi.mock("next/navigation", () => ({

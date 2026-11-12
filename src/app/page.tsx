@@ -262,8 +262,8 @@ export default function HomePage() {
                                     Pasta Tradicional
                                 </span>
                                 <p className="text-text-primary mt-2 text-sm font-medium">
-                                    "¿Cuál es la proporción áurea de harina 00 y huevos para una
-                                    pasta fresca que no se rompa?"
+                                    &ldquo;¿Cuál es la proporción áurea de harina 00 y huevos para una
+                                    pasta fresca que no se rompa?&rdquo;
                                 </p>
                             </div>
                             <div className="border-border bg-surface shadow-elevation-0 hover:border-brand-primary/40 hover:shadow-elevation-1 rounded-xl border p-5 transition-all">
@@ -271,8 +271,8 @@ export default function HomePage() {
                                     Sumillería
                                 </span>
                                 <p className="text-text-primary mt-2 text-sm font-medium">
-                                    "¿Qué vino marida con la untuosidad de un risotto con hongos
-                                    porcini y trufa negra?"
+                                    &ldquo;¿Qué vino marida con la untuosidad de un risotto con hongos
+                                    porcini y trufa negra?&rdquo;
                                 </p>
                             </div>
                             <div className="border-border bg-surface shadow-elevation-0 hover:border-brand-primary/40 hover:shadow-elevation-1 rounded-xl border p-5 transition-all">
@@ -280,8 +280,8 @@ export default function HomePage() {
                                     Sustituciones
                                 </span>
                                 <p className="text-text-primary mt-2 text-sm font-medium">
-                                    "¿Cómo reemplazar el huevo en repostería tradicional manteniendo
-                                    esponjosidad y humedad?"
+                                    &ldquo;¿Cómo reemplazar el huevo en repostería tradicional manteniendo
+                                    esponjosidad y humedad?&rdquo;
                                 </p>
                             </div>
                             <div className="border-border bg-surface shadow-elevation-0 hover:border-brand-primary/40 hover:shadow-elevation-1 rounded-xl border p-5 transition-all">
@@ -289,8 +289,8 @@ export default function HomePage() {
                                     Emulsiones
                                 </span>
                                 <p className="text-text-primary mt-2 text-sm font-medium">
-                                    "¿Cuál es la temperatura máxima del agua para no cortar el queso
-                                    en una salsa Cacio e Pepe?"
+                                    &ldquo;¿Cuál es la temperatura máxima del agua para no cortar el queso
+                                    en una salsa Cacio e Pepe?&rdquo;
                                 </p>
                             </div>
                             <div className="border-border bg-surface shadow-elevation-0 hover:border-brand-primary/40 hover:shadow-elevation-1 rounded-xl border p-5 transition-all">
@@ -298,8 +298,8 @@ export default function HomePage() {
                                     Gestión de Cocina
                                 </span>
                                 <p className="text-text-primary mt-2 text-sm font-medium">
-                                    "¿Cómo estructurar una ficha técnica culinaria para sostener un
-                                    food cost inferior al 28%?"
+                                    &ldquo;¿Cómo estructurar una ficha técnica culinaria para sostener un
+                                    food cost inferior al 28%?&rdquo;
                                 </p>
                             </div>
                             <div className="border-border bg-surface shadow-elevation-0 hover:border-brand-primary/40 hover:shadow-elevation-1 rounded-xl border p-5 transition-all">
@@ -307,7 +307,7 @@ export default function HomePage() {
                                     Fuera de Dominio
                                 </span>
                                 <p className="text-text-primary mt-2 text-sm font-medium">
-                                    "¿Cómo reparar el carburador de un motor?" (Prueba el rechazo
+                                    &ldquo;¿Cómo reparar el carburador de un motor?&rdquo; (Prueba el rechazo
                                     educado y delimitación).
                                 </p>
                             </div>

@@ -162,7 +162,7 @@ describe("ConversationService (Unit)", () => {
         });
 
         it("should throw NotFoundException if conversation does not exist", async () => {
-            (mockConversationRepo.findById as any).mockResolvedValueOnce(null);
+            vi.mocked(mockConversationRepo.findById).mockResolvedValueOnce(null);
 
             await expect(
                 service.deleteConversation("non-existent", "user-1")

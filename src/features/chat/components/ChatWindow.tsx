@@ -17,22 +17,23 @@ interface ChatWindowProps {
 export function ChatWindow({ conversationId, conversationTitle }: ChatWindowProps) {
     const { messages, isLoading, isGenerating, sendMessage } = useChat({ conversationId });
     const { containerRef, handleScroll } = useAutoScroll([messages.length, isGenerating]);
-    const [title, setTitle] = useState(conversationTitle || "Chef George");
+    const [fetchedTitle, setFetchedTitle] = useState<{ id: string; title: string } | null>(null);
 
     useEffect(() => {
-        if (conversationTitle) {
-            setTitle(conversationTitle);
-        } else if (conversationId) {
-            fetch(`/api/conversations/${conversationId}`)
-                .then((res) => (res.ok ? res.json() : null))
-                .then((json) => {
-                    if (json?.data?.title) setTitle(json.data.title);
-                })
-                .catch(() => {});
-        } else {
-            setTitle("Chef George");
-        }
+        if (conversationTitle || !conversationId) return;
+
+        fetch(`/api/conversations/${conversationId}`)
+            .then((res) => (res.ok ? res.json() : null))
+            .then((json) => {
+                if (json?.data?.title) setFetchedTitle({ id: conversationId, title: json.data.title });
+            })
+            .catch(() => {});
     }, [conversationId, conversationTitle]);
+
+    const title =
+        conversationTitle ||
+        (fetchedTitle && fetchedTitle.id === conversationId ? fetchedTitle.title : null) ||
+        "Chef George";
 
     return (
         <div className="flex h-full w-full flex-col bg-background">

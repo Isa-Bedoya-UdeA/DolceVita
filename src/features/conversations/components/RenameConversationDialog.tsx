@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Edit3, X } from "lucide-react";
 import { toast } from "sonner";
 
@@ -21,10 +21,12 @@ export function RenameConversationDialog({
 }: RenameConversationDialogProps) {
     const [title, setTitle] = useState(initialTitle);
     const [isSubmitting, setIsSubmitting] = useState(false);
+    const [syncedWith, setSyncedWith] = useState({ initialTitle, isOpen });
 
-    useEffect(() => {
+    if (syncedWith.initialTitle !== initialTitle || syncedWith.isOpen !== isOpen) {
+        setSyncedWith({ initialTitle, isOpen });
         setTitle(initialTitle);
-    }, [initialTitle, isOpen]);
+    }
 
     if (!isOpen) return null;
 

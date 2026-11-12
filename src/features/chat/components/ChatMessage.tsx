@@ -16,10 +16,12 @@ export function ChatMessage({ message }: ChatMessageProps) {
         successMessage: "Mensaje copiado",
     });
 
-    const formattedTime = new Date(message.createdAt || Date.now()).toLocaleTimeString([], {
-        hour: "2-digit",
-        minute: "2-digit",
-    });
+    const formattedTime = message.createdAt
+        ? new Date(message.createdAt).toLocaleTimeString([], {
+              hour: "2-digit",
+              minute: "2-digit",
+          })
+        : "";
 
     return (
         <div

@@ -6,7 +6,7 @@ import { ChatHeader } from "@/features/chat/components/ChatHeader";
 
 // Mock next/image
 vi.mock("next/image", () => ({
-    default: (props: any) => <img {...props} />,
+    default: (props: React.ImgHTMLAttributes<HTMLImageElement>) => <img {...props} />,
 }));
 
 describe("Chat Components (UI)", () => {

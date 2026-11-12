@@ -1,13 +1,15 @@
 "use client";
 
-import { useEffect, useState, useCallback } from "react";
+import { useCallback, useEffect, useSyncExternalStore } from "react";
 import type { Theme, ResolvedTheme } from "../types/theme.type";
 
 const THEME_STORAGE_KEY = "dolce-vita-theme";
+const THEME_CHANGED_EVENT = "dolce-vita:theme-changed";
+const DARK_QUERY = "(prefers-color-scheme: dark)";
 
 function getSystemTheme(): ResolvedTheme {
     if (typeof window === "undefined") return "light";
-    return window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+    return window.matchMedia(DARK_QUERY).matches ? "dark" : "light";
 }
 
 function applyThemeToDocument(resolved: ResolvedTheme) {
@@ -26,47 +28,50 @@ function applyThemeToDocument(resolved: ResolvedTheme) {
     }
 }
 
+function readStoredTheme(): Theme {
+    try {
+        const stored = localStorage.getItem(THEME_STORAGE_KEY);
+        return stored === "light" || stored === "dark" ? stored : "system";
+    } catch {
+        return "system";
+    }
+}
+
+function subscribeToTheme(onChange: () => void) {
+    const mediaQuery = window.matchMedia(DARK_QUERY);
+    window.addEventListener("storage", onChange);
+    window.addEventListener(THEME_CHANGED_EVENT, onChange);
+    mediaQuery.addEventListener("change", onChange);
+    return () => {
+        window.removeEventListener("storage", onChange);
+        window.removeEventListener(THEME_CHANGED_EVENT, onChange);
+        mediaQuery.removeEventListener("change", onChange);
+    };
+}
+
+const noopSubscribe = () => () => {};
+
 export function useTheme() {
-    const [theme, setThemeState] = useState<Theme>("system");
-    const [resolvedTheme, setResolvedTheme] = useState<ResolvedTheme>("light");
-    const [mounted, setMounted] = useState(false);
+    const theme = useSyncExternalStore<Theme>(subscribeToTheme, readStoredTheme, () => "system");
+    const systemTheme = useSyncExternalStore<ResolvedTheme>(
+        subscribeToTheme,
+        getSystemTheme,
+        () => "light",
+    );
+    const mounted = useSyncExternalStore(
+        noopSubscribe,
+        () => true,
+        () => false,
+    );
+    const resolvedTheme: ResolvedTheme = theme === "system" ? systemTheme : theme;
 
     useEffect(() => {
-        const storedTheme = (localStorage.getItem(THEME_STORAGE_KEY) as Theme) || "system";
-        setThemeState(storedTheme);
-
-        const initialResolved: ResolvedTheme =
-            storedTheme === "system" ? getSystemTheme() : storedTheme;
-        setResolvedTheme(initialResolved);
-        applyThemeToDocument(initialResolved);
-        setMounted(true);
-    }, []);
-
-    useEffect(() => {
-        if (!mounted) return;
-
-        const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
-
-        const handleSystemChange = (e: MediaQueryListEvent) => {
-            if (theme === "system") {
-                const newResolved: ResolvedTheme = e.matches ? "dark" : "light";
-                setResolvedTheme(newResolved);
-                applyThemeToDocument(newResolved);
-            }
-        };
-
-        mediaQuery.addEventListener("change", handleSystemChange);
-        return () => mediaQuery.removeEventListener("change", handleSystemChange);
-    }, [theme, mounted]);
+        if (mounted) applyThemeToDocument(resolvedTheme);
+    }, [resolvedTheme, mounted]);
 
     const setTheme = useCallback((newTheme: Theme) => {
-        setThemeState(newTheme);
-        if (typeof window !== "undefined") {
-            localStorage.setItem(THEME_STORAGE_KEY, newTheme);
-            const resolved: ResolvedTheme = newTheme === "system" ? getSystemTheme() : newTheme;
-            setResolvedTheme(resolved);
-            applyThemeToDocument(resolved);
-        }
+        localStorage.setItem(THEME_STORAGE_KEY, newTheme);
+        window.dispatchEvent(new Event(THEME_CHANGED_EVENT));
     }, []);
 
     const toggleTheme = useCallback(() => {

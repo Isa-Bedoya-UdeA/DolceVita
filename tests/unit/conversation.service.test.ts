@@ -6,10 +6,15 @@ import { ConversationEntity } from "@/server/domain/entities/conversation.entity
 import { MessageEntity } from "@/server/domain/entities/message.entity";
 import { MessageRole } from "@/server/domain/enums/message-role.enum";
 import { MessageStatus } from "@/server/domain/enums/message-status.enum";
+import { AIProvider } from "@/server/domain/enums/ai-provider.enum";
+import { AIProviderService } from "@/server/services/ai-provider.service";
+import { AIProviderException } from "@/server/exceptions/ai-provider.exception";
+import { prisma } from "@/server/infrastructure/database/prisma";
 
 // Mock prisma
 vi.mock("@/server/infrastructure/database/prisma", () => ({
     prisma: {
+        $transaction: vi.fn((operations: Promise<unknown>[]) => Promise.all(operations)),
         assistantConfig: {
             findFirst: vi.fn().mockResolvedValue({ id: "ast-123" }),
         },
@@ -41,6 +46,7 @@ describe("ConversationService (Unit)", () => {
     let service: ConversationService;
     let mockConversationRepo: IConversationRepository;
     let mockMessageRepo: IMessageRepository;
+    let mockAIService: AIProviderService;
 
     const dummyConversation: ConversationEntity = {
         id: "conv-1",
@@ -69,7 +75,17 @@ describe("ConversationService (Unit)", () => {
             findById: vi.fn().mockResolvedValue(null),
         };
 
-        service = new ConversationService(mockConversationRepo, mockMessageRepo);
+        mockAIService = {
+            generateReply: vi.fn().mockResolvedValue({
+                content: "### Risotto cremoso de hongos",
+                provider: AIProvider.OPENROUTER,
+                model: "openai/gpt-4o-mini",
+                latencyMs: 120,
+                fallbackUsed: false,
+            }),
+        } as unknown as AIProviderService;
+
+        service = new ConversationService(mockConversationRepo, mockMessageRepo, mockAIService);
     });
 
     describe("listConversations", () => {
@@ -166,6 +182,47 @@ describe("ConversationService (Unit)", () => {
             expect(result.userMessage.content).toBe("¿Cómo hacer un risotto perfecto?");
             expect(result.assistantMessage).toBeDefined();
             expect(result.assistantMessage.content).toContain("Risotto");
+        });
+
+        it("should send the stored history plus the new question to the AI service", async () => {
+            vi.mocked(mockMessageRepo.findByConversationId).mockResolvedValueOnce([
+                {
+                    id: "m1",
+                    conversationId: "conv-1",
+                    senderId: "user-1",
+                    role: MessageRole.USER,
+                    content: "Hola George",
+                    status: MessageStatus.COMPLETED,
+                    provider: null,
+                    model: null,
+                    createdAt: new Date(),
+                    updatedAt: new Date(),
+                    editedAt: null,
+                },
+            ]);
+
+            await service.addMessage("conv-1", "user-1", "¿Y un risotto?");
+
+            const history = vi.mocked(mockAIService.generateReply).mock.calls[0][0];
+            expect(history.map((m) => m.content)).toEqual(["Hola George", "¿Y un risotto?"]);
+        });
+
+        it("should reject messages to a conversation owned by another user", async () => {
+            await expect(service.addMessage("conv-1", "intruder", "Hola")).rejects.toThrow(
+                "not authorized",
+            );
+            expect(mockAIService.generateReply).not.toHaveBeenCalled();
+        });
+
+        it("should not persist anything when every AI provider fails", async () => {
+            vi.mocked(mockAIService.generateReply).mockRejectedValueOnce(
+                new AIProviderException("George no está disponible"),
+            );
+
+            await expect(service.addMessage("conv-1", "user-1", "Hola")).rejects.toThrow(
+                "George no está disponible",
+            );
+            expect(prisma.message.create).not.toHaveBeenCalled();
         });
 
         it("should reject empty message content", async () => {

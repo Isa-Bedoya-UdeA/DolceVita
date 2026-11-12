@@ -5,6 +5,9 @@ import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { ChatMessageData } from "../types/chat.type";
 import { notifyConversationsChanged } from "@/features/conversations/hooks/useConversation";
+import { useMessageActions } from "@/features/messages/hooks/useMessageActions";
+import { useMessageRetry } from "@/features/messages/hooks/useMessageRetry";
+import { MessageDto, toChatMessage } from "@/lib/formatters/message.formatter";
 
 interface UseChatProps {
     conversationId?: string;
@@ -22,7 +25,7 @@ async function requestMessages(id: string): Promise<ChatMessageData[]> {
     }
 
     const json = await res.json();
-    return Array.isArray(json.data) ? json.data : [];
+    return Array.isArray(json.data) ? json.data.map((dto: MessageDto) => toChatMessage(dto)) : [];
 }
 
 export function useChat({ conversationId }: UseChatProps) {
@@ -150,12 +153,22 @@ export function useChat({ conversationId }: UseChatProps) {
         [conversationId, router]
     );
 
+    const { editMessage, rateMessage } = useMessageActions({
+        messages,
+        setMessages,
+        setIsGenerating,
+    });
+    const { retryMessage } = useMessageRetry({ messages, setMessages, setIsGenerating });
+
     return {
         messages,
         isLoading,
         isGenerating,
         error,
         sendMessage,
+        editMessage,
+        retryMessage,
+        rateMessage,
         refetch: () => conversationId && fetchMessages(conversationId),
     };
 }

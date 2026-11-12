@@ -15,7 +15,10 @@ interface ChatWindowProps {
 }
 
 export function ChatWindow({ conversationId, conversationTitle }: ChatWindowProps) {
-    const { messages, isLoading, isGenerating, sendMessage } = useChat({ conversationId });
+    const { messages, isLoading, isGenerating, sendMessage, editMessage, retryMessage, rateMessage } =
+        useChat({ conversationId });
+    const lastAssistantId = [...messages].reverse().find((msg) => msg.role === "ASSISTANT")?.id;
+    const isLastMessageAssistant = messages[messages.length - 1]?.role === "ASSISTANT";
     const { containerRef, handleScroll } = useAutoScroll([messages.length, isGenerating]);
     const [fetchedTitle, setFetchedTitle] = useState<{ id: string; title: string } | null>(null);
 
@@ -52,7 +55,17 @@ export function ChatWindow({ conversationId, conversationTitle }: ChatWindowProp
                     ) : (
                         <div className="space-y-4">
                             {messages.map((msg) => (
-                                <ChatMessage key={msg.id} message={msg} />
+                                <ChatMessage
+                                    key={msg.id}
+                                    message={msg}
+                                    isLastAssistant={isLastMessageAssistant && msg.id === lastAssistantId}
+                                    actionsDisabled={isGenerating}
+                                    actions={{
+                                        onEdit: editMessage,
+                                        onRetry: retryMessage,
+                                        onRate: rateMessage,
+                                    }}
+                                />
                             ))}
 
                             {isGenerating && <TypingIndicator />}

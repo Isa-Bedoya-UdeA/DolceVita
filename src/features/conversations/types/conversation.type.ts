@@ -21,6 +21,8 @@ export interface ChatMessageData {
     content: string;
     status?: "PENDING" | "COMPLETED" | "FAILED" | "SENT" | "STREAMING" | "ERROR" | string;
     metadata?: Record<string, unknown> | null;
+    rating?: "positive" | "negative" | null;
+    editedAt?: string | null;
     createdAt: string;
     updatedAt: string;
 }

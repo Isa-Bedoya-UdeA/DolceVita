@@ -1,20 +1,30 @@
 "use client";
 
+import { useState } from "react";
 import Image from "next/image";
-import { Check, Copy, User } from "lucide-react";
+import { User } from "lucide-react";
 import { MarkdownRenderer } from "@/components/shared/MarkdownRenderer";
-import { useCopyToClipboard } from "@/hooks/useCopyToClipboard";
+import { MessageActions } from "@/features/messages/components/MessageActions";
+import { MessageEditor } from "@/features/messages/components/MessageEditor";
+import type { MessageActionHandlers } from "@/features/messages/types/message.type";
 import { ChatMessageData } from "../types/chat.type";
 
 interface ChatMessageProps {
     message: ChatMessageData;
+    isLastAssistant?: boolean;
+    actionsDisabled?: boolean;
+    actions?: MessageActionHandlers;
 }
 
-export function ChatMessage({ message }: ChatMessageProps) {
+export function ChatMessage({
+    message,
+    isLastAssistant = false,
+    actionsDisabled = false,
+    actions,
+}: ChatMessageProps) {
     const isUser = message.role === "USER";
-    const { isCopied, copy } = useCopyToClipboard({
-        successMessage: "Mensaje copiado",
-    });
+    const [isEditing, setIsEditing] = useState(false);
+    const handlers = actions && !message.id.startsWith("temp-") ? actions : undefined;
 
     const formattedTime = message.createdAt
         ? new Date(message.createdAt).toLocaleTimeString([], {
@@ -55,39 +65,40 @@ export function ChatMessage({ message }: ChatMessageProps) {
                 }`}
             >
                 {/* Content */}
-                {isUser ? (
+                {isUser && isEditing && actions ? (
+                    <MessageEditor
+                        initialContent={message.content}
+                        onSave={(content) => actions.onEdit(message.id, content)}
+                        onCancel={() => setIsEditing(false)}
+                    />
+                ) : isUser ? (
                     <p className="whitespace-pre-wrap leading-relaxed">{message.content}</p>
                 ) : (
                     <MarkdownRenderer content={message.content} />
                 )}
 
-                {/* Footer details: time + copy action */}
+                {/* Footer details: time + message actions */}
                 <div
                     className={`mt-2 flex items-center gap-2 text-[10px] ${
                         isUser ? "text-text-inverse/70 justify-end" : "text-text-secondary justify-between"
                     }`}
                 >
-                    <span>{formattedTime}</span>
+                    <span>
+                        {formattedTime}
+                        {message.editedAt ? " · editado" : ""}
+                    </span>
 
-                    {!isUser && (
-                        <button
-                            type="button"
-                            onClick={() => copy(message.content)}
-                            className="inline-flex items-center gap-1 rounded px-1.5 py-0.5 opacity-0 transition group-hover:opacity-100 hover:bg-surface-muted hover:text-text-primary"
-                            aria-label="Copiar respuesta"
-                        >
-                            {isCopied ? (
-                                <>
-                                    <Check className="h-3 w-3 text-brand-primary" />
-                                    <span>Copiado</span>
-                                </>
-                            ) : (
-                                <>
-                                    <Copy className="h-3 w-3" />
-                                    <span>Copiar</span>
-                                </>
-                            )}
-                        </button>
+                    {!isEditing && (
+                        <MessageActions
+                            content={message.content}
+                            isUser={isUser}
+                            rating={message.rating}
+                            canRetry={isLastAssistant}
+                            disabled={actionsDisabled}
+                            onEdit={handlers && (() => setIsEditing(true))}
+                            onRetry={handlers && (() => handlers.onRetry(message.id))}
+                            onRate={handlers && ((rating) => handlers.onRate(message.id, rating))}
+                        />
                     )}
                 </div>
             </div>

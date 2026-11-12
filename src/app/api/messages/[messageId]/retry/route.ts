@@ -1,10 +1,10 @@
-import { NextResponse } from "next/server";
+import { messageController } from "@/server/controllers/message.controller";
 
 interface RouteParams {
     params: Promise<{ messageId: string }>;
 }
 
-export async function POST(request: Request, { params }: RouteParams) {
+export async function POST(req: Request, { params }: RouteParams) {
     const { messageId } = await params;
-    return NextResponse.json({ message: `Retry message ${messageId}` });
+    return messageController.retry(req, messageId);
 }

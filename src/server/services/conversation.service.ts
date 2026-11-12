@@ -22,12 +22,14 @@ import { OwnershipGuard } from "../auth/guards/ownership.guard";
 import { MessageRole } from "../domain/enums/message-role.enum";
 import { MessageStatus } from "../domain/enums/message-status.enum";
 import { AIProviderService, aiProviderService } from "./ai-provider.service";
+import { IFeedbackRepository, feedbackRepository } from "../repositories/feedback.repository";
 
 export class ConversationService {
     constructor(
         private readonly conversationRepo: IConversationRepository = conversationRepository,
         private readonly messageRepo: IMessageRepository = messageRepository,
         private readonly aiService: AIProviderService = aiProviderService,
+        private readonly feedbackRepo: IFeedbackRepository = feedbackRepository,
     ) {}
 
     async listConversations(userId: string): Promise<ConversationResponseDto[]> {
@@ -140,7 +142,15 @@ export class ConversationService {
         }
 
         const messages = await this.messageRepo.findByConversationId(conversationId);
-        return MessageMapper.toResponseDtoList(messages);
+        const ratings = await this.feedbackRepo.findRatingsByUser(
+            messages.map((message) => message.id),
+            userId,
+        );
+
+        return MessageMapper.toResponseDtoList(messages).map((message) => ({
+            ...message,
+            rating: ratings.get(message.id) ?? null,
+        }));
     }
 
     async addMessage(

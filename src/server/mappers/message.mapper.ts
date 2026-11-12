@@ -29,6 +29,7 @@ export class MessageMapper {
             role: entity.role.toLowerCase() as "user" | "assistant" | "system",
             content: entity.content,
             createdAt: entity.createdAt.toISOString(),
+            editedAt: entity.editedAt ? entity.editedAt.toISOString() : null,
         };
     }
 

@@ -3,7 +3,6 @@ import { ConversationService } from "@/server/services/conversation.service";
 import { IConversationRepository } from "@/server/domain/contracts/conversation-repository.contract";
 import { IMessageRepository } from "@/server/domain/contracts/message-repository.contract";
 import { ConversationEntity } from "@/server/domain/entities/conversation.entity";
-import { MessageEntity } from "@/server/domain/entities/message.entity";
 import { MessageRole } from "@/server/domain/enums/message-role.enum";
 import { MessageStatus } from "@/server/domain/enums/message-status.enum";
 import { AIProvider } from "@/server/domain/enums/ai-provider.enum";
@@ -97,6 +96,13 @@ describe("ConversationService (Unit)", () => {
             expect(result[0].id).toBe("conv-1");
             expect(result[0].title).toBe("Receta Risotto");
         });
+
+        it("should return empty array when user has no conversations", async () => {
+            vi.mocked(mockConversationRepo.findByUserId).mockResolvedValueOnce([]);
+
+            const result = await service.listConversations("user-empty");
+            expect(result).toEqual([]);
+        });
     });
 
     describe("createConversation", () => {
@@ -145,6 +151,12 @@ describe("ConversationService (Unit)", () => {
             expect(result.title).toBe("Nuevo Título Gourmet");
         });
 
+        it("should reject rename for a conversation owned by another user", async () => {
+            await expect(
+                service.renameConversation("conv-1", "intruder", { title: "Nuevo Título" })
+            ).rejects.toThrow("not authorized");
+        });
+
         it("should throw validation error if title is empty or only whitespace", async () => {
             await expect(
                 service.renameConversation("conv-1", "user-1", { title: "   " })
@@ -159,6 +171,12 @@ describe("ConversationService (Unit)", () => {
             ).resolves.toBeUndefined();
 
             expect(mockConversationRepo.delete).toHaveBeenCalledWith("conv-1");
+        });
+
+        it("should reject delete for a conversation owned by another user", async () => {
+            await expect(
+                service.deleteConversation("conv-1", "intruder")
+            ).rejects.toThrow("not authorized");
         });
 
         it("should throw NotFoundException if conversation does not exist", async () => {

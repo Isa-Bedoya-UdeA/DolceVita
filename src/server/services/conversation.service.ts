@@ -34,18 +34,6 @@ export class ConversationService {
 
     async listConversations(userId: string): Promise<ConversationResponseDto[]> {
         const conversations = await this.conversationRepo.findByUserId(userId);
-
-        if (conversations.length === 0) {
-            const all = await prisma.conversation.findMany({
-                orderBy: { updatedAt: "desc" },
-            });
-            if (all.length > 0) {
-                return ConversationMapper.toResponseDtoList(
-                    all.map((c) => ConversationMapper.toEntity(c)),
-                );
-            }
-        }
-
         return ConversationMapper.toResponseDtoList(conversations);
     }
 
@@ -87,6 +75,8 @@ export class ConversationService {
             throw new NotFoundException(`Conversation ${id} does not exist`);
         }
 
+        OwnershipGuard.verify(conversation.userId, userId);
+
         return ConversationMapper.toResponseDto(conversation);
     }
 
@@ -116,6 +106,8 @@ export class ConversationService {
             throw new NotFoundException(`Conversation ${id} does not exist`);
         }
 
+        OwnershipGuard.verify(conversation.userId, userId);
+
         const updated = await this.conversationRepo.updateTitle(id, validatedDto.title);
 
         return ConversationMapper.toResponseDto(updated);
@@ -127,6 +119,8 @@ export class ConversationService {
         if (!conversation) {
             throw new NotFoundException(`Conversation ${id} does not exist`);
         }
+
+        OwnershipGuard.verify(conversation.userId, userId);
 
         await this.conversationRepo.delete(id);
     }
@@ -140,6 +134,8 @@ export class ConversationService {
         if (!conversation) {
             throw new NotFoundException(`Conversation ${conversationId} does not exist`);
         }
+
+        OwnershipGuard.verify(conversation.userId, userId);
 
         const messages = await this.messageRepo.findByConversationId(conversationId);
         const ratings = await this.feedbackRepo.findRatingsByUser(

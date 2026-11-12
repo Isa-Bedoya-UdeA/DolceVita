@@ -22,7 +22,7 @@ export function ChatMessage({
     actionsDisabled = false,
     actions,
 }: ChatMessageProps) {
-    const isUser = message.role === "USER";
+    const isUser = String(message.role).toUpperCase() === "USER";
     const [isEditing, setIsEditing] = useState(false);
     const handlers = actions && !message.id.startsWith("temp-") ? actions : undefined;
 

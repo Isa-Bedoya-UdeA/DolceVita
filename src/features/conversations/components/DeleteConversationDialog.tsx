@@ -49,7 +49,7 @@ export function DeleteConversationDialog({
                 </button>
 
                 <div className="flex items-center gap-3 mb-4">
-                    <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-status-error/15 text-status-error">
+                    <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-error border border-error-border text-error-foreground">
                         <AlertTriangle className="h-5 w-5" />
                     </div>
                     <div>
@@ -77,7 +77,7 @@ export function DeleteConversationDialog({
                         type="button"
                         onClick={handleDelete}
                         disabled={isDeleting}
-                        className="inline-flex items-center gap-2 rounded-xl bg-status-error px-5 py-2 text-sm font-semibold text-white transition hover:opacity-90 disabled:opacity-50"
+                        className="inline-flex items-center gap-2 rounded-xl bg-error border border-error-border px-5 py-2 text-sm font-semibold text-error-foreground transition hover:bg-error-border/60 disabled:opacity-50"
                     >
                         <Trash2 className="h-4 w-4" />
                         <span>{isDeleting ? "Eliminando..." : "Eliminar"}</span>

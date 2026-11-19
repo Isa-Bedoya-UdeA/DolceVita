@@ -27,8 +27,8 @@ export function ChatHeader({
                 <div>
                     <div className="flex items-center gap-2">
                         <h2 className="text-sm font-bold text-text-primary">{title}</h2>
-                        <span className="flex items-center gap-1 rounded-full bg-status-success/15 px-2 py-0.5 text-[10px] font-semibold text-status-success">
-                            <span className="h-1.5 w-1.5 rounded-full bg-status-success animate-pulse" />
+                        <span className="flex items-center gap-1 rounded-full bg-success border border-success-border px-2 py-0.5 text-[10px] font-semibold text-success-foreground">
+                            <span className="h-1.5 w-1.5 rounded-full bg-success-foreground animate-pulse" />
                             En línea
                         </span>
                     </div>

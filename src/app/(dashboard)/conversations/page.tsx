@@ -161,7 +161,7 @@ export default function ConversationsHistoryPage() {
                                                                     setSelectedConv(conv);
                                                                     setIsDeleteOpen(true);
                                                                 }}
-                                                                className="flex w-full items-center gap-2 px-3 py-2 text-xs font-medium text-status-error hover:bg-status-error/10"
+                                                                className="flex w-full items-center gap-2 px-3 py-2 text-xs font-medium text-error-foreground hover:bg-error"
                                                             >
                                                                 <Trash2 className="h-3.5 w-3.5" />
                                                                 <span>Eliminar</span>

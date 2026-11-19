@@ -45,6 +45,16 @@ describe("AssistantService (FR-020)", () => {
         expect(active).toMatchObject({ id: "cfg-1", temperature: 0.4, maxTokens: 900 });
     });
 
+    it("uses the environment defaults if the stored row has no generation parameters", async () => {
+        const legacy = { ...stored } as Partial<AssistantConfigEntity>;
+        delete legacy.temperature;
+        delete legacy.maxTokens;
+        service = new AssistantService(makeRepo(legacy as AssistantConfigEntity));
+        const active = await service.getActiveAssistant();
+        expect(typeof active.temperature).toBe("number");
+        expect(typeof active.maxTokens).toBe("number");
+    });
+
     it("falls back to the default prompt when there is no configuration", async () => {
         service = new AssistantService(makeRepo(null));
         const config = await service.getAdminConfig();

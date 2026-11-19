@@ -46,8 +46,8 @@ export class AssistantService {
             id: config.id,
             name: config.name,
             systemPrompt: config.systemPrompt,
-            temperature: config.temperature,
-            maxTokens: config.maxTokens,
+            temperature: config.temperature ?? aiConfig.temperature,
+            maxTokens: config.maxTokens ?? aiConfig.maxTokens,
         };
     }
 

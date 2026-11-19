@@ -10,9 +10,10 @@ export interface AuthenticatedUser {
 export class AuthGuard {
     static async authenticate(request: Request): Promise<AuthenticatedUser> {
         try {
-            // 1. Check for custom dev/test headers if supplied
-            const headerUserId = request.headers.get("x-user-id");
-            const headerUserEmail = request.headers.get("x-user-email");
+            // 1. Dev/test identity headers. Ignored in production so they cannot be used to impersonate users.
+            const isProduction = process.env.NODE_ENV === "production";
+            const headerUserId = isProduction ? null : request.headers.get("x-user-id");
+            const headerUserEmail = isProduction ? null : request.headers.get("x-user-email");
 
             if (headerUserId) {
                 const user = await prisma.user.findUnique({
@@ -61,8 +62,10 @@ export class AuthGuard {
             // 3. Independent chat feature mode:
             // Since feature/auth-and-security is developed separately by another team member,
             // we NEVER block chat operations. We resolve to the default user in the database.
+            // DEV_USER_EMAIL (development only) selects which seeded user acts as the default one.
+            const devEmail = isProduction ? undefined : process.env.DEV_USER_EMAIL?.trim();
             let defaultUser = await prisma.user.findFirst({
-                where: { email: { equals: "user@dolcevita.com", mode: "insensitive" } },
+                where: { email: { equals: devEmail || "user@dolcevita.com", mode: "insensitive" } },
                 select: { id: true, email: true, name: true, role: true },
             });
 

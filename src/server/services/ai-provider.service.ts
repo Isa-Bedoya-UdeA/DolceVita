@@ -17,7 +17,11 @@ export class AIProviderService {
     async generateReply(history: HistoryMessage[]): Promise<OrchestratedResult> {
         const assistant = await this.assistants.getActiveAssistant();
         const messages = this.prompts.buildMessages(assistant.systemPrompt, history);
-        return this.orchestrator.generate({ messages });
+        return this.orchestrator.generate({
+            messages,
+            temperature: assistant.temperature,
+            maxTokens: assistant.maxTokens,
+        });
     }
 }
 

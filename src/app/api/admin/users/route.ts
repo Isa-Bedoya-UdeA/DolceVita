@@ -1,9 +1,7 @@
-import { NextResponse } from "next/server";
+import { connection } from "next/server";
+import { adminController } from "@/server/controllers/admin.controller";
 
-export async function GET() {
-    return NextResponse.json({ message: "List users" });
-}
-
-export async function POST() {
-    return NextResponse.json({ message: "Create user" });
+export async function GET(req: Request) {
+    await connection();
+    return adminController.listUsers(req);
 }

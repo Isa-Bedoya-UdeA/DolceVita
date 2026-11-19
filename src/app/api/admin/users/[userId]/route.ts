@@ -1,20 +1,17 @@
-import { NextResponse } from "next/server";
+import { connection } from "next/server";
+import { adminController } from "@/server/controllers/admin.controller";
 
 interface RouteParams {
     params: Promise<{ userId: string }>;
 }
 
-export async function GET(request: Request, { params }: RouteParams) {
+export async function GET(req: Request, { params }: RouteParams) {
+    await connection();
     const { userId } = await params;
-    return NextResponse.json({ message: `Get user ${userId}` });
+    return adminController.getUser(req, userId);
 }
 
-export async function PATCH(request: Request, { params }: RouteParams) {
+export async function PATCH(req: Request, { params }: RouteParams) {
     const { userId } = await params;
-    return NextResponse.json({ message: `Update user ${userId}` });
-}
-
-export async function DELETE(request: Request, { params }: RouteParams) {
-    const { userId } = await params;
-    return NextResponse.json({ message: `Delete user ${userId}` });
+    return adminController.updateUserRole(req, userId);
 }

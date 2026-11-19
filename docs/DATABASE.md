@@ -341,6 +341,8 @@ Stores the configuration of the gastronomic assistant, including its identity an
 | `name` | `String` | `NOT NULL` | Assistant display name. |
 | `description` | `String` | `NOT NULL` | Description of the assistant's purpose and specialization. |
 | `systemPrompt` | `Text` | `NOT NULL` | Instructions defining the assistant's behavior and gastronomic expertise. |
+| `temperature` | `Float` | `NOT NULL, DEFAULT 0.7` | Sampling temperature sent to the model (0 to 1.5, validated by the API). |
+| `maxTokens` | `Int` | `NOT NULL, DEFAULT 1500` | Maximum tokens per assistant response (256 to 4096, validated by the API). |
 | `isActive` | `Boolean` | `NOT NULL, DEFAULT TRUE` | Indicates whether the configuration is active. |
 | `updatedAt` | `DateTime` | `NOT NULL, AUTO-UPDATED` | Last configuration update timestamp. |
 

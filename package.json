@@ -10,7 +10,8 @@
         "typecheck": "tsc --noEmit",
         "test": "vitest run",
         "test:watch": "vitest",
-        "test:coverage": "vitest run --coverage"
+        "test:coverage": "vitest run --coverage",
+        "test:assistant": "tsx scripts/assistant-battery.ts"
     },
     "dependencies": {
         "@ai-sdk/openai-compatible": "^3.0.85",

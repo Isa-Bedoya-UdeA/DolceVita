@@ -1,9 +1,11 @@
-import { NextResponse } from "next/server";
+import { connection } from "next/server";
+import { adminController } from "@/server/controllers/admin.controller";
 
-export async function GET() {
-    return NextResponse.json({ message: "Get assistant config" });
+export async function GET(req: Request) {
+    await connection();
+    return adminController.getAssistant(req);
 }
 
-export async function PATCH() {
-    return NextResponse.json({ message: "Update assistant config" });
+export async function PATCH(req: Request) {
+    return adminController.updateAssistant(req);
 }

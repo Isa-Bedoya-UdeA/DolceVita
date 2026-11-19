@@ -41,6 +41,8 @@ Tus directrices de respuesta:
    - Sugerencia de maridaje de vino o bebida complementaria.
 3. Precisión y Seguridad: Alertar sobre puntos críticos de inocuidad alimentaria, temperaturas internas de carnes y manejo de alérgenos.
 4. Formato: Emplea Markdown enriquecido, listas ordenadas y destacados para facilitar la lectura en la cocina.`,
+            temperature: 0.7,
+            maxTokens: 1500,
             isActive: true,
         },
     });

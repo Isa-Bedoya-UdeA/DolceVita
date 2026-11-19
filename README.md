@@ -70,8 +70,8 @@ The application adheres to **Feature-Driven Design** on the frontend and **Clean
 
 ### Administration Panel & Analytics
 
-- **Assistant Configuration:** Administrative interface to tune George's system instructions, model temperature, max tokens, and active LLM provider.
-- **User Management:** Inspection of registered user accounts and dynamic role assignment (`USER` / `ADMIN`).
+- **Assistant Configuration:** Administrative interface to edit George's identity and system instructions, model temperature, and max tokens per response, with a preview of the full system message (editable prompt plus fixed guardrails). Provider, model, and API keys stay in server environment variables and are only shown as read-only status.
+- **User Management:** Searchable list of registered accounts with role assignment (`USER` / `ADMIN`). An administrator cannot change their own role, and the last administrator cannot be demoted.
 - **General Statistics:** Overview of system activity metrics, including registered users, active chats, total messages, and satisfaction ratios.
 
 ### Design System & User Experience
@@ -267,6 +267,10 @@ DIRECT_URL="postgresql://postgres.[REF]:[PASSWORD]@aws-0-us-east-1.pooler.supaba
 # AI Model Providers
 OPENROUTER_API_KEY="sk-or-v1-..."
 GROQ_API_KEY="gsk_..."
+
+# Development only: seeded user the app acts as while the login is not integrated.
+# Use admin@dolcevita.com to open the /admin panel. Ignored in production.
+# DEV_USER_EMAIL="admin@dolcevita.com"
 ```
 
 ### Database Synchronization & Seed
@@ -316,6 +320,8 @@ Test these questions in the chat interface to verify domain guardrails and culin
 4. **Food Safety & Critical Points:** _"What is the maximum emulsification water temperature to avoid breaking the cheese in a Cacio e Pepe?"_
 5. **Out-of-Domain Refusal:** _"How do I repair a car carburetor?"_ _(George must politely refuse and redirect focus to gastronomy)._
 
+The formal 13-case test battery (domain, out-of-domain, uncertainty, safety, and conversational context) is documented in [docs/PRUEBAS-ASISTENTE.md](docs/PRUEBAS-ASISTENTE.md). Run it against the real providers with `pnpm test:assistant`; the answers are written to `docs/PRUEBAS-ASISTENTE-RESULTADOS.md`.
+
 ---
 
 ## Quality Gates & Verification
@@ -329,6 +335,7 @@ Run these verification commands before opening pull requests or committing chang
 | Linter            | `pnpm lint`                    | Runs static analysis and Next.js ESLint rules           |
 | Typecheck & Build | `pnpm build`                   | Production build validation using Next.js and Turbopack |
 | Unit Tests        | `pnpm test`                    | Runs automated test suites with Vitest                  |
+| Assistant Battery | `pnpm test:assistant`          | Sends the test questions to George and saves the answers |
 
 ---
 
@@ -359,6 +366,7 @@ All project documentation is maintained under the `docs/` directory:
 | [docs/SECURITY.md](docs/SECURITY.md)         | Security controls, session integrity, sanitization, and RBAC.       |
 | [docs/DESIGNSYSTEM.md](docs/DESIGNSYSTEM.md) | Visual tokens, color schemes, typography, and dark mode specs.      |
 | [docs/DEPLOY.md](docs/DEPLOY.md)             | Production build, environment configuration, and deployment guides. |
+| [docs/PRUEBAS-ASISTENTE.md](docs/PRUEBAS-ASISTENTE.md) | Assistant test battery: questions, expected behavior, and evidence. |
 
 ---
 

@@ -1150,11 +1150,15 @@ Request Body: None.
       "id": "user-id",
       "name": "Example User",
       "email": "user@example.com",
-      "role": "USER"
+      "role": "USER",
+      "createdAt": "2026-11-18T15:00:00.000Z",
+      "conversationCount": 3
     }
   ]
 }
 ```
+
+`GET /api/admin/users/[userId]` returns the same object for a single user (`404 NOT_FOUND` if it does not exist).
 
 Only fields required for administrative user management may be exposed. Password hashes, session tokens, and authentication secrets must never be returned.
 
@@ -1248,6 +1252,7 @@ Request Body:
 | 401 | `UNAUTHORIZED` | No valid session |
 | 403 | `FORBIDDEN` | User is not an administrator |
 | 404 | `NOT_FOUND` | User does not exist |
+| 409 | `CONFLICT` | The administrator tried to change their own role, or the change would leave the platform without administrators |
 | 500 | `INTERNAL_SERVER_ERROR` | Role update failed |
 
 #### 8.13.7 Side Effects
@@ -1301,7 +1306,17 @@ Content-Type: application/json
 
 The configuration is managed by the application. Provider credentials and private secrets are not part of the public configuration contract.
 
-The exact configurable fields are defined by the assistant configuration schema in the application. This endpoint must not expose provider credentials, environment variables, or internal integration secrets.
+`PATCH` accepts any subset of the following fields (at least one). Unknown fields are rejected with `400 VALIDATION_ERROR`.
+
+| Field | Type | Constraints | Description |
+| --- | --- | --- | --- |
+| `name` | `string` | 2 to 60 characters | Assistant display name |
+| `description` | `string` | Up to 300 characters | Short description of the specialty |
+| `systemPrompt` | `string` | 50 to 8000 characters | Editable system instructions |
+| `temperature` | `number` | 0 to 1.5 | Sampling temperature |
+| `maxTokens` | `integer` | 256 to 4096 | Maximum tokens per response |
+
+This endpoint must not expose provider credentials, environment variables, or internal integration secrets.
 
 #### 8.14.4 Validation
 
@@ -1319,10 +1334,23 @@ The response contains the sanitized assistant configuration exposed to administr
 ```json
 {
   "data": {
-    "name": "George"
+    "id": "config-id",
+    "name": "George",
+    "description": "Chef ejecutivo y sumiller...",
+    "systemPrompt": "Eres George...",
+    "temperature": 0.7,
+    "maxTokens": 1500,
+    "guardrails": "REGLAS OBLIGATORIAS...",
+    "updatedAt": "2026-11-18T15:00:00.000Z",
+    "providers": {
+      "primary": { "name": "OPENROUTER", "model": "openai/gpt-4o-mini", "configured": true },
+      "fallback": { "name": "GROQ", "model": "llama-3.3-70b-versatile", "configured": true }
+    }
   }
 }
 ```
+
+`guardrails` are the fixed rules appended to every system prompt; they are read-only. `providers` reports which model is used and whether a key is set, never the key itself. If no configuration exists, `GET` returns the default prompt with `id: null` and the first `PATCH` creates it.
 
 The response must include only configuration fields supported by the application.
 
@@ -1386,12 +1414,20 @@ Request Body: None.
 ```json
 {
   "data": {
-    "users": {},
-    "conversations": {},
-    "messages": {}
+    "generatedAt": "2026-11-18T15:00:00.000Z",
+    "users": { "total": 2, "admins": 1, "users": 1, "newLast7Days": 0 },
+    "conversations": { "total": 3, "activeLast7Days": 1, "averageMessages": 2 },
+    "messages": {
+      "total": 6, "fromUsers": 3, "fromAssistant": 3, "failed": 0, "last7Days": 2,
+      "byProvider": { "OPENROUTER": 2, "GROQ": 1 }
+    },
+    "feedback": { "positive": 2, "negative": 0, "satisfactionRate": 100 },
+    "activity": [{ "date": "2026-11-18", "messages": 2 }]
   }
 }
 ```
+
+`activity` contains the last 7 days (America/Bogota dates), including days with zero messages.
 
 The statistics response exposes aggregated application information. It must not disclose private message contents, passwords, session information, or provider credentials.
 
@@ -1418,6 +1454,21 @@ Repeated requests do not modify application data.
 - Administrative application statistics.
 - Role-based authorization.
 - Data privacy.
+
+### 8.16 API-016 — Current User
+
+| Property | Value |
+| --- | --- |
+| Method / Operation | `GET` |
+| Path | `/api/users/me` |
+| Purpose | Return the identity and role of the current session so the interface can show administrative options |
+| Authentication | Required |
+| Authorization | Any authenticated role |
+| Idempotency | Idempotent |
+
+**Success Response (`200 OK`):** `{ "data": { "id": "...", "name": "...", "email": "...", "role": "ADMIN" } }`
+
+The interface uses this value only to show or hide navigation; every administrative endpoint validates the role again on the server.
 
 ## 9. Data Schemas
 

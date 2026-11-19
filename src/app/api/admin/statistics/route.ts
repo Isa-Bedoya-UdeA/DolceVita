@@ -1,5 +1,7 @@
-import { NextResponse } from "next/server";
+import { connection } from "next/server";
+import { adminController } from "@/server/controllers/admin.controller";
 
-export async function GET() {
-    return NextResponse.json({ message: "Admin statistics" });
+export async function GET(req: Request) {
+    await connection();
+    return adminController.getStatistics(req);
 }

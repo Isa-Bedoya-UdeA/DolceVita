@@ -159,6 +159,8 @@ model AssistantConfig {
   name         String
   description  String
   systemPrompt String   @db.Text
+  temperature  Float    @default(0.7)
+  maxTokens    Int      @default(1500)
   isActive     Boolean  @default(true)
   updatedAt    DateTime @updatedAt
 

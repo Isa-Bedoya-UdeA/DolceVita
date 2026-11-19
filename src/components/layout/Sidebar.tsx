@@ -3,10 +3,11 @@
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { History, Plus, UtensilsCrossed } from "lucide-react";
+import { History, Plus, ShieldCheck, UtensilsCrossed } from "lucide-react";
 import { ConversationList } from "@/features/conversations/components/ConversationList";
 import { useConversation } from "@/features/conversations/hooks/useConversation";
 import { ThemeToggle } from "@/features/theme/components/ThemeToggle";
+import { useCurrentUser } from "@/features/session/hooks/useCurrentUser";
 
 interface SidebarProps {
     onCloseMobile?: () => void;
@@ -17,6 +18,7 @@ export function Sidebar({ onCloseMobile }: SidebarProps) {
     const router = useRouter();
     const { conversations, isLoading, createConversation, renameConversation, deleteConversation } =
         useConversation();
+    const { isAdmin } = useCurrentUser();
 
     // Extract active conversation id from pathname e.g. /chat/[id]
     const match = pathname.match(/\/chat\/([a-zA-Z0-9-]+)/);
@@ -98,6 +100,21 @@ export function Sidebar({ onCloseMobile }: SidebarProps) {
                     <History className="h-4 w-4" />
                     <span>Historial de chats</span>
                 </Link>
+
+                {isAdmin && (
+                    <Link
+                        href="/admin"
+                        onClick={onCloseMobile}
+                        className={`flex items-center gap-2.5 rounded-xl px-3 py-2 text-xs font-medium transition ${
+                            pathname.startsWith("/admin")
+                                ? "bg-brand-primary/10 text-brand-primary"
+                                : "text-text-secondary hover:bg-surface-muted hover:text-text-primary"
+                        }`}
+                    >
+                        <ShieldCheck className="h-4 w-4" />
+                        <span>Panel de administración</span>
+                    </Link>
+                )}
 
                 <div className="flex items-center justify-between rounded-xl bg-surface-muted px-3 py-2">
                     <div className="flex items-center gap-2">

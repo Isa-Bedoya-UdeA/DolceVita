@@ -1,4 +1,6 @@
+import { auth } from "../auth";
 import { prisma } from "../../infrastructure/database/prisma";
+import { UnauthorizedException } from "../../exceptions/auth.exception";
 
 export interface AuthenticatedUser {
     id: string;
@@ -7,102 +9,35 @@ export interface AuthenticatedUser {
     role: string;
 }
 
+/**
+ * FR-002 / FR-003 — Server-side session validation for every protected Route Handler.
+ *
+ * The identity always comes from the Auth.js session cookie, never from the request body
+ * or custom headers. The user is re-read from the database on each request so that a
+ * deleted account loses access immediately and a role change made by an ADMIN applies
+ * without waiting for the session token to expire.
+ */
 export class AuthGuard {
-    static async authenticate(request: Request): Promise<AuthenticatedUser> {
-        try {
-            // 1. Dev/test identity headers. Ignored in production so they cannot be used to impersonate users.
-            const isProduction = process.env.NODE_ENV === "production";
-            const headerUserId = isProduction ? null : request.headers.get("x-user-id");
-            const headerUserEmail = isProduction ? null : request.headers.get("x-user-email");
+    // The request is kept in the signature for the controllers; Auth.js reads the
+    // session cookie from the current request context.
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    static async authenticate(_request?: Request): Promise<AuthenticatedUser> {
+        const session = await auth();
+        const userId = session?.user?.id;
 
-            if (headerUserId) {
-                const user = await prisma.user.findUnique({
-                    where: { id: headerUserId },
-                    select: { id: true, email: true, name: true, role: true },
-                });
-                if (user) return user;
-            }
-
-            if (headerUserEmail) {
-                const user = await prisma.user.findUnique({
-                    where: { email: headerUserEmail },
-                    select: { id: true, email: true, name: true, role: true },
-                });
-                if (user) return user;
-            }
-
-            // 2. Check for Auth.js / NextAuth session cookie if the auth feature has set one
-            const cookieHeader = request.headers.get("cookie") || "";
-            const sessionTokenMatch =
-                cookieHeader.match(/authjs\.session-token=([^;]+)/) ||
-                cookieHeader.match(/next-auth\.session-token=([^;]+)/) ||
-                cookieHeader.match(/__Secure-authjs\.session-token=([^;]+)/);
-
-            if (sessionTokenMatch && sessionTokenMatch[1]) {
-                const sessionToken = sessionTokenMatch[1];
-                const session = await prisma.session.findUnique({
-                    where: { sessionToken },
-                    include: {
-                        user: {
-                            select: {
-                                id: true,
-                                email: true,
-                                name: true,
-                                role: true,
-                            },
-                        },
-                    },
-                });
-
-                if (session && session.expires > new Date()) {
-                    return session.user;
-                }
-            }
-
-            // 3. Independent chat feature mode:
-            // Since feature/auth-and-security is developed separately by another team member,
-            // we NEVER block chat operations. We resolve to the default user in the database.
-            // DEV_USER_EMAIL (development only) selects which seeded user acts as the default one.
-            const devEmail = isProduction ? undefined : process.env.DEV_USER_EMAIL?.trim();
-            let defaultUser = await prisma.user.findFirst({
-                where: { email: { equals: devEmail || "user@dolcevita.com", mode: "insensitive" } },
-                select: { id: true, email: true, name: true, role: true },
-            });
-
-            if (!defaultUser) {
-                defaultUser = await prisma.user.findFirst({
-                    select: { id: true, email: true, name: true, role: true },
-                });
-            }
-
-            if (!defaultUser) {
-                defaultUser = await prisma.user.create({
-                    data: {
-                        email: "user@dolcevita.com",
-                        name: "Usuario Gastrónomo",
-                        role: "USER",
-                    },
-                    select: { id: true, email: true, name: true, role: true },
-                });
-            }
-
-            return defaultUser;
-        } catch (error) {
-            console.error("[AuthGuard] Warning: Database access fallback during chat:", error);
-
-            // Ultimate fallback to ensure chat is never blocked
-            const emergencyUser = await prisma.user.findFirst({
-                select: { id: true, email: true, name: true, role: true },
-            });
-
-            if (emergencyUser) return emergencyUser;
-
-            return {
-                id: "default-guest-id",
-                email: "user@dolcevita.com",
-                name: "Usuario Gastrónomo",
-                role: "USER",
-            };
+        if (!userId) {
+            throw new UnauthorizedException("Debes iniciar sesión para acceder a este recurso");
         }
+
+        const user = await prisma.user.findUnique({
+            where: { id: userId },
+            select: { id: true, email: true, name: true, role: true },
+        });
+
+        if (!user) {
+            throw new UnauthorizedException("Tu sesión ya no es válida. Inicia sesión de nuevo");
+        }
+
+        return user;
     }
 }

@@ -213,7 +213,8 @@ Server Route Handlers
 
 - **Cookie Security:** Auth.js session cookies are configured with `HttpOnly: true`, `Secure: true` (in production), and `SameSite: "lax"`.
 - **Session Duration:** Active sessions are valid for a default period of 30 days, renewed automatically during active user engagement.
-- **Logout Invalidation:** Triggering the logout action clears the session cookie and invalidates the session record in the database.
+- **Session Strategy:** The Auth.js credentials provider uses signed, encrypted JWT sessions stored in the HTTP-only cookie. On every protected request `AuthGuard` re-reads the user from the database, so deleted accounts lose access immediately and role changes apply without waiting for the token to expire.
+- **Logout Invalidation:** Triggering the logout action clears the session cookie through Auth.js `signOut`.
 
 ---
 

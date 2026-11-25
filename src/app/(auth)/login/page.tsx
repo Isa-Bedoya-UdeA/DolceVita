@@ -1,7 +1,26 @@
+import type { Metadata } from "next";
+import { Suspense } from "react";
+import { LoginForm } from "@/features/auth/components/LoginForm";
+import { Loader2 } from "lucide-react";
+
+export const metadata: Metadata = {
+    title: "Iniciar sesión | Dolce Vita",
+};
+
 export default function LoginPage() {
     return (
-        <main className="flex min-h-screen items-center justify-center p-4">
-            <h1 className="text-2xl font-bold">Iniciar Sesión</h1>
-        </main>
+        // LoginForm reads ?callbackUrl / ?error, so it renders inside a Suspense boundary.
+        <Suspense
+            fallback={
+                <div className="flex justify-center py-16">
+                    <Loader2
+                        className="text-brand-primary h-6 w-6 animate-spin"
+                        aria-label="Cargando"
+                    />
+                </div>
+            }
+        >
+            <LoginForm />
+        </Suspense>
     );
 }

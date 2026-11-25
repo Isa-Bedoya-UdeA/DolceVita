@@ -30,6 +30,8 @@ function makeRepo(records: AdminUserRecord[]): IUserRepository {
         countByRole: vi.fn((role: Role) =>
             Promise.resolve(records.filter((r) => r.role === role).length),
         ),
+        findByEmail: vi.fn().mockResolvedValue(null),
+        createWithPassword: vi.fn(),
     };
 }
 

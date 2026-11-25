@@ -1,6 +1,20 @@
 import { prisma } from "../infrastructure/database/prisma";
-import { AdminUserRecord, IUserRepository } from "../domain/contracts/user-repository.contract";
+import {
+    AdminUserRecord,
+    AuthUserRecord,
+    CreateUserWithPasswordInput,
+    IUserRepository,
+} from "../domain/contracts/user-repository.contract";
 import { Role } from "../domain/enums/role.enum";
+
+const authUserSelect = {
+    id: true,
+    name: true,
+    email: true,
+    role: true,
+    image: true,
+    passwordHash: true,
+} as const;
 
 const adminUserSelect = {
     id: true,
@@ -59,6 +73,35 @@ export class UserRepository implements IUserRepository {
 
     async countByRole(role: Role): Promise<number> {
         return prisma.user.count({ where: { role } });
+    }
+
+    async findByEmail(email: string): Promise<AuthUserRecord | null> {
+        const row = await prisma.user.findFirst({
+            where: { email: { equals: email, mode: "insensitive" } },
+            select: authUserSelect,
+        });
+        return row ? { ...row, role: row.role as Role } : null;
+    }
+
+    /** Registration always creates a USER; only an ADMIN can promote accounts later. */
+    async createWithPassword(input: CreateUserWithPasswordInput): Promise<AuthUserRecord> {
+        const row = await prisma.user.create({
+            data: {
+                name: input.name,
+                email: input.email,
+                passwordHash: input.passwordHash,
+                role: Role.USER,
+                accounts: {
+                    create: {
+                        type: "credentials",
+                        provider: "credentials",
+                        providerAccountId: input.email,
+                    },
+                },
+            },
+            select: authUserSelect,
+        });
+        return { ...row, role: row.role as Role };
     }
 }
 

@@ -1,7 +1,10 @@
+import type { Metadata } from "next";
+import { RegisterForm } from "@/features/auth/components/RegisterForm";
+
+export const metadata: Metadata = {
+    title: "Crear cuenta | Dolce Vita",
+};
+
 export default function RegisterPage() {
-    return (
-        <main className="flex min-h-screen items-center justify-center p-4">
-            <h1 className="text-2xl font-bold">Crear Cuenta</h1>
-        </main>
-    );
+    return <RegisterForm />;
 }

@@ -9,7 +9,7 @@ export class RoleGuard {
         const role = String(user.role).toUpperCase();
 
         if (!roles.some((allowed) => allowed === role)) {
-            throw new ForbiddenException("Esta operación requiere permisos de administrador");
+            throw new ForbiddenException("No tienes permisos para realizar esta operación");
         }
 
         return user;

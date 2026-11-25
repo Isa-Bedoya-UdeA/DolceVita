@@ -5,6 +5,7 @@ export const endpoints = {
     message: (id: string) => `/api/messages/${id}`,
     messageRetry: (id: string) => `/api/messages/${id}/retry`,
     messageFeedback: (id: string) => `/api/messages/${id}/feedback`,
+    register: "/api/auth/register",
     currentUser: "/api/users/me",
     adminUsers: "/api/admin/users",
     adminUser: (id: string) => `/api/admin/users/${id}`,

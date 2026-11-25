@@ -8,6 +8,7 @@ import { ConversationList } from "@/features/conversations/components/Conversati
 import { useConversation } from "@/features/conversations/hooks/useConversation";
 import { ThemeToggle } from "@/features/theme/components/ThemeToggle";
 import { useCurrentUser } from "@/features/session/hooks/useCurrentUser";
+import { UserMenu } from "./UserMenu";
 
 interface SidebarProps {
     onCloseMobile?: () => void;
@@ -125,6 +126,8 @@ export function Sidebar({ onCloseMobile }: SidebarProps) {
                     </div>
                     <ThemeToggle />
                 </div>
+
+                <UserMenu onNavigate={onCloseMobile} />
             </div>
         </aside>
     );

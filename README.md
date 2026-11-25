@@ -255,7 +255,7 @@ NODE_ENV=development
 
 # Authentication (Auth.js / NextAuth v5)
 NEXTAUTH_URL=http://localhost:3000
-NEXTAUTH_SECRET=generate-a-secure-secret-with-openssl-rand-base64-32
+AUTH_SECRET=generate-a-secure-secret-with-openssl-rand-base64-32
 
 # Database (Supabase PostgreSQL)
 # Transaction Pooler connection string (port 6543) for runtime execution
@@ -267,10 +267,6 @@ DIRECT_URL="postgresql://postgres.[REF]:[PASSWORD]@aws-0-us-east-1.pooler.supaba
 # AI Model Providers
 OPENROUTER_API_KEY="sk-or-v1-..."
 GROQ_API_KEY="gsk_..."
-
-# Development only: seeded user the app acts as while the login is not integrated.
-# Use admin@dolcevita.com to open the /admin panel. Ignored in production.
-# DEV_USER_EMAIL="admin@dolcevita.com"
 ```
 
 ### Database Synchronization & Seed

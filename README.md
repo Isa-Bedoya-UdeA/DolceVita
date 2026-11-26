@@ -22,7 +22,8 @@
 | Platform         | Web (Responsive Desktop & Mobile)                                                                           |
 | Primary Language | TypeScript 5                                                                                                |
 | Framework        | Next.js 16.4.5 (App Router, Turbopack)                                                                      |
-| Repository       | [202602-Ingeniria-Web-Udea/CodeChef-AI-Chat](https://github.com/202602-Ingeniria-Web-Udea/CodeChef-AI-Chat) |
+| Classroom Org Repo | [202602-Ingeniria-Web-Udea/CodeChef-AI-Chat](https://github.com/202602-Ingeniria-Web-Udea/CodeChef-AI-Chat) |
+| Personal Repo (Vercel) | [Isa-Bedoya-UdeA/DolceVita](https://github.com/Isa-Bedoya-UdeA/DolceVita)                                   |
 | License          | MIT License                                                                                                 |
 
 ---
@@ -227,9 +228,16 @@ Ensure you have the following installed and configured before running the projec
 
 ### Clone the Repository
 
+You can clone either the personal repository or the classroom organization repository:
+
 ```bash
+# Option A: Personal Repository (Connected to Vercel)
+git clone https://github.com/Isa-Bedoya-UdeA/DolceVita.git
+cd DolceVita/dolce-vita
+
+# Option B: Classroom Organization Repository
 git clone https://github.com/202602-Ingeniria-Web-Udea/CodeChef-AI-Chat.git
-cd dolce-vita
+cd CodeChef-AI-Chat/dolce-vita
 ```
 
 ### Install Dependencies
@@ -382,6 +390,6 @@ This project is licensed under the terms of the MIT License. See the [LICENSE](L
 | **Daniela Vela**                  | `daniela.vela@udea.edu.co`   | Fullstack Developer |
 | **Isabela Bedoya**                | `isabela.bedoya@udea.edu.co` | Fullstack Developer |
 
-- **Organization Repository:** [202602-Ingeniria-Web-Udea/CodeChef-AI-Chat](https://github.com/202602-Ingeniria-Web-Udea/CodeChef-AI-Chat)
-- **Repository Connected to Vercel:** [Isa-Bedoya-UdeA/DolceVita](https://github.com/Isa-Bedoya-UdeA/DolceVita)
-- **Vercel Deployment:**
+- **Classroom Organization Repository:** [202602-Ingeniria-Web-Udea/CodeChef-AI-Chat](https://github.com/202602-Ingeniria-Web-Udea/CodeChef-AI-Chat)
+- **Personal Repository (Deploy Origin):** [Isa-Bedoya-UdeA/DolceVita](https://github.com/Isa-Bedoya-UdeA/DolceVita)
+- **Production Deployment (Vercel):** [https://dolce-vita.vercel.app](https://dolce-vita.vercel.app) (Configurado sobre la rama `main`)

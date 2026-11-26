@@ -24,6 +24,7 @@
 | Framework        | Next.js 16.4.5 (App Router, Turbopack)                                                                      |
 | Classroom Org Repo | [202602-Ingeniria-Web-Udea/CodeChef-AI-Chat](https://github.com/202602-Ingeniria-Web-Udea/CodeChef-AI-Chat) |
 | Personal Repo (Vercel) | [Isa-Bedoya-UdeA/DolceVita](https://github.com/Isa-Bedoya-UdeA/DolceVita)                                   |
+| Live URL (Vercel) | [https://dolce-vita-codechef.vercel.app](https://dolce-vita-codechef.vercel.app)                         |
 | License          | MIT License                                                                                                 |
 
 ---
@@ -392,4 +393,4 @@ This project is licensed under the terms of the MIT License. See the [LICENSE](L
 
 - **Classroom Organization Repository:** [202602-Ingeniria-Web-Udea/CodeChef-AI-Chat](https://github.com/202602-Ingeniria-Web-Udea/CodeChef-AI-Chat)
 - **Personal Repository (Deploy Origin):** [Isa-Bedoya-UdeA/DolceVita](https://github.com/Isa-Bedoya-UdeA/DolceVita)
-- **Production Deployment (Vercel):** [https://dolce-vita.vercel.app](https://dolce-vita.vercel.app) (Configurado sobre la rama `main`)
+- **Production Deployment (Vercel):** [https://dolce-vita-codechef.vercel.app](https://dolce-vita-codechef.vercel.app) (Configurado sobre la rama `main`)
